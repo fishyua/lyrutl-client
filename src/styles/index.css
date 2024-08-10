@@ -27,6 +27,6 @@
   height: 100vh;
 }
 
-#root > div {
+#root > * {
   position: absolute;
 }

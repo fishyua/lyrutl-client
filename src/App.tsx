@@ -12,6 +12,7 @@ import {
 } from '@material/material-color-utilities'
 import { createStore } from 'solid-js/store'
 import { useConfig } from './utils.ts'
+import DynaGradient from './components/DynaGradient.tsx'
 
 function App() {
   const config = createStore<LyrutlConfig>(defaultConfig)
@@ -42,6 +43,16 @@ function App() {
         config={config[0]}
         onCoverUpdate={(img) => themeFromImage(img).then((t) => setTheme(t))}
       />
+      {config[0].dynamic && (
+        <DynaGradient
+          theme={theme()}
+          dark={
+            config[0].darkTheme == 'auto'
+              ? window.matchMedia('(prefers-color-scheme: dark)').matches
+              : config[0].darkTheme
+          }
+        />
+      )}
     </>
   )
 }

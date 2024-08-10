@@ -42,3 +42,11 @@ export function findIndex(lrc: LyricLine[], ms: number) {
 export function limitNumber(num: number, min: number, max: number) {
   return Math.min(Math.max(num, min), max)
 }
+
+export function rangedRand(min: number, max: number) {
+  return Math.random() * (max - min) + min
+}
+
+export function listRand<T>(list: T[]): T {
+  return list[Math.floor(Math.random() * list.length)]
+}

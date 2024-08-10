@@ -9,6 +9,7 @@ export interface LyrutlConfig {
   transparent: boolean
   scale: boolean
   blur: boolean
+  dynamic: boolean
 }
 
 export const defaultConfig: LyrutlConfig = {
@@ -17,6 +18,7 @@ export const defaultConfig: LyrutlConfig = {
   transparent: false,
   scale: false,
   blur: true,
+  dynamic: false,
 }
 
 export const defaultObsConfig: LyrutlConfig = {
@@ -132,6 +134,24 @@ export default function Settings(props: SettingsProps) {
             class="switch"
             data-active={!props.config[0].blur}
             onClick={() => props.config[1]('blur', false)}
+          >
+            false
+          </button>
+        </div>
+        <h2>dynamic background</h2>
+        <p class="tips">same as above</p>
+        <div class="switches">
+          <button
+            class="switch"
+            data-active={props.config[0].dynamic}
+            onClick={() => props.config[1]('dynamic', true)}
+          >
+            true
+          </button>
+          <button
+            class="switch"
+            data-active={!props.config[0].dynamic}
+            onClick={() => props.config[1]('dynamic', false)}
           >
             false
           </button>

@@ -28,6 +28,12 @@
   flex-shrink: 0;
 }
 
+canvas {
+  filter: blur(7rem);
+  opacity: 0.5;
+  z-index: -1;
+}
+
 :root {
   @include useMd(primary-container);
   @include useTransition(background-color);
