@@ -23,6 +23,7 @@ export const defaultObsConfig: LyrutlConfig = {
   ...defaultConfig,
   darkTheme: true,
   transparent: true,
+  scale: true,
 }
 
 interface SettingsProps {
