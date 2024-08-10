@@ -1,0 +1,106 @@
+@use 'sass:list';
+
+@mixin useMd($theme, $invert: false) {
+  @if ($invert) {
+    background: var(--md-sys-color-on-#{$theme});
+    color: var(--md-sys-color-#{$theme});
+  } @else {
+    background: var(--md-sys-color-#{$theme});
+    color: var(--md-sys-color-on-#{$theme});
+  }
+  border-color: var(--md-sys-color-outline);
+}
+
+@mixin useTransition($properties...) {
+  transition-property: $properties;
+  @apply duration-500 ease-out-expo;
+}
+
+.transparent {
+  background: transparent !important;
+}
+
+.scale {
+  font-size: 1.2vw !important;
+}
+
+* {
+  flex-shrink: 0;
+}
+
+:root {
+  @include useMd(primary-container);
+  @include useTransition(background-color);
+}
+
+.tips {
+  @apply text-xs opacity-60 leading-none;
+}
+
+button {
+  @apply outline-0 border-0;
+}
+
+.button,
+.icon-button,
+.switch {
+  @apply active:opacity-60;
+}
+
+.button {
+  @include useMd(surface-variant);
+  @apply rounded-md p-1 text-xl;
+}
+
+.icon-button {
+  @include useMd(surface-variant);
+  @include useTransition(padding);
+  @apply rounded-full p-1 text-xl hover:px-2.5;
+}
+
+.switch {
+  @include useMd(surface-variant);
+  @apply py-0.5 px-2 text-xs;
+  &[data-active='true']::before {
+    content: '> ';
+  }
+}
+
+.switches {
+  @apply flex flex-nowrap overflow-hidden rounded-md;
+  & > * + * {
+    @apply border-l;
+  }
+}
+
+.drawer {
+  @include useMd(surface);
+  @include useTransition(transform, opacity);
+  @apply max-w-64 overflow-auto z-40 tracking-tight py-3 flex flex-col items-start rounded-lg;
+  & > * {
+    @apply mx-3;
+  }
+  h1 {
+    @apply text-xl;
+  }
+  h2 {
+    @apply text-base mt-3.5;
+  }
+  h2,
+  .tips {
+    @apply mb-1 leading-none;
+  }
+}
+
+.drawer-open {
+  @include useMd(secondary-container, true);
+}
+
+.drawer,
+.drawer-open {
+  @apply left-3 bottom-3 absolute z-50;
+}
+
+.main-wrapper {
+  @include useTransition(transform, opacity);
+}

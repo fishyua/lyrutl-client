@@ -1,29 +1,47 @@
-import { createSignal } from 'solid-js'
-import solidLogo from './assets/solid.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
+import '@fontsource-variable/inter'
+import './styles/index.css'
+import './styles/interface.scss'
+import Lyrics from './components/Lyrics.tsx'
+import Settings, { defaultConfig, defaultObsConfig, LyrutlConfig } from './components/Settings.tsx'
+import { createEffect, createSignal, onMount } from 'solid-js'
+import {
+  applyTheme,
+  argbFromHex,
+  themeFromImage,
+  themeFromSourceColor,
+} from '@material/material-color-utilities'
+import { createStore } from 'solid-js/store'
+import { useConfig } from './utils.ts'
 
 function App() {
-  const [count, setCount] = createSignal(0)
-
+  const config = createStore<LyrutlConfig>(defaultConfig)
+  const [theme, setTheme] = createSignal(themeFromSourceColor(argbFromHex('#00ff88')))
+  const [drawer, setDrawer] = createSignal(true)
+  createEffect(() => {
+    useConfig(config[0])
+    applyTheme(theme(), {
+      target: document.documentElement,
+      dark:
+        config[0].darkTheme == 'auto'
+          ? window.matchMedia('(prefers-color-scheme: dark)').matches
+          : config[0].darkTheme,
+    })
+  })
+  onMount(() => {
+    window.obsstudio && config[1](defaultObsConfig)
+  })
   return (
     <>
-      <div>
-        <a href="https://vitejs.dev" target="_blank">
-          <img src={viteLogo} class="logo" alt="Vite logo" />
-        </a>
-        <a href="https://solidjs.com" target="_blank">
-          <img src={solidLogo} class="logo solid" alt="Solid logo" />
-        </a>
-      </div>
-      <h1>Vite + Solid</h1>
-      <div class="card">
-        <button onClick={() => setCount((count) => count + 1)}>count is {count()}</button>
-        <p>
-          Edit <code>src/App.tsx</code> and save to test HMR
-        </p>
-      </div>
-      <p class="read-the-docs">Click on the Vite and Solid logos to learn more</p>
+      <Settings
+        config={config}
+        canOpen={true}
+        open={drawer()}
+        onToggle={(open) => setDrawer(open)}
+      />
+      <Lyrics
+        config={config[0]}
+        onCoverUpdate={(img) => themeFromImage(img).then((t) => setTheme(t))}
+      />
     </>
   )
 }

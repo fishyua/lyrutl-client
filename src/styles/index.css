@@ -3,14 +3,10 @@
 @tailwind utilities;
 
 :root {
-  color-scheme: dark;
-  background: transparent;
-  color: rgba(255, 255, 255, 0.84);
-
+  color-scheme: light dark;
   overflow: hidden;
 
-  font-size: 1.3vw;
-  font-family: sans-serif;
+  font-family: 'Inter Variable', sans-serif;
   font-synthesis: none;
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
@@ -29,4 +25,8 @@
 
 #root {
   height: 100vh;
+}
+
+#root > div {
+  position: absolute;
 }
