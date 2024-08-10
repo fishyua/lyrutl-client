@@ -35,6 +35,7 @@ export default function Lyrics(props: LyricProps) {
   // update: index
   createEffect(() => {
     if (!testLrc) return
+    if (index() >= (parse(testLrc) as LyricLine[]).length) return
     console.log('lyrics: index', index())
 
     gsap.to(lrcAnimTarget, {
