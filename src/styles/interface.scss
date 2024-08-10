@@ -76,7 +76,7 @@ button {
 .drawer {
   @include useMd(surface);
   @include useTransition(transform, opacity);
-  @apply max-w-64 overflow-auto z-40 tracking-tight py-3 flex flex-col items-start rounded-lg;
+  @apply max-w-72 overflow-auto z-40 tracking-tight py-3 flex flex-col items-start rounded-lg;
   & > * {
     @apply mx-3;
   }
