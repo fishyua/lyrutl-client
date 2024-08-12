@@ -18,6 +18,6 @@ export default class Timer {
   }
   stop(at: number = -1) {
     clearInterval(this.id)
-    if (at >= 0) this.time = at
+    if (at >= 0) this.time = at + this.interval
   }
 }
