@@ -28,6 +28,11 @@
   flex-shrink: 0;
 }
 
+*[data-disabled='true'] {
+  opacity: 0.5 !important;
+  pointer-events: none !important;
+}
+
 canvas {
   filter: blur(7rem);
   opacity: 0.5;
@@ -49,7 +54,8 @@ button {
 
 .button,
 .icon-button,
-.switch {
+.switch,
+.tab {
   @apply active:opacity-60;
 }
 
@@ -82,7 +88,7 @@ button {
 .drawer {
   @include useMd(surface);
   @include useTransition(transform, opacity);
-  @apply max-w-72 overflow-auto z-40 tracking-tight py-3 flex flex-col items-start rounded-lg;
+  @apply w-72 overflow-auto z-40 tracking-tight py-3 flex flex-col items-start rounded-lg;
   & > * {
     @apply mx-3;
   }
@@ -90,11 +96,17 @@ button {
     @apply text-xl;
   }
   h2 {
-    @apply text-base mt-3.5;
+    @apply text-base;
   }
   h2,
   .tips {
     @apply mb-1 leading-none;
+  }
+  & > * + *:not(.tips):not(.switches):not(.flex-grow) {
+    @apply mt-3.5;
+  }
+  & > div:not(.switches) {
+    @apply gap-3;
   }
 }
 
@@ -109,4 +121,34 @@ button {
 
 .main-wrapper {
   @include useTransition(transform, opacity);
+}
+
+.tabs {
+  @apply grid grid-flow-col gap-3;
+}
+
+.tab {
+  @apply relative flex items-center leading-none text-xs p-2 cursor-pointer;
+  &::before {
+    z-index: -1;
+    content: '';
+    scale: 0.9;
+    opacity: 0;
+    @apply absolute left-0 right-0 top-0 bottom-0 rounded-md;
+    @include useMd(primary);
+    @include useTransition(scale, opacity);
+  }
+  &:hover,
+  &[data-active='true'] {
+    color: var(--md-sys-color-on-primary);
+    &::before {
+      scale: 1;
+      opacity: 1;
+    }
+  }
+}
+
+.input {
+  @include useMd(surface-variant);
+  @apply px-2 py-1.5 text-xs outline-none border border-transparent focus:border-current rounded-md;
 }

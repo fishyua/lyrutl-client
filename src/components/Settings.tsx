@@ -1,10 +1,10 @@
-import { JSX } from 'solid-js'
+import { createSignal, JSX } from 'solid-js'
 import PathIcon from './PathIcon.tsx'
-import { mdiChevronLeft, mdiChevronRight } from '@mdi/js'
+import { mdiArrowRight, mdiChevronLeft, mdiChevronRight, mdiServer, mdiWrench } from '@mdi/js'
 import { SetStoreFunction } from 'solid-js/store'
 
 export interface LyrutlConfig {
-  local: boolean
+  server: string
   darkTheme: boolean | 'auto'
   transparent: boolean
   scale: boolean
@@ -13,7 +13,7 @@ export interface LyrutlConfig {
 }
 
 export const defaultConfig: LyrutlConfig = {
-  local: false,
+  server: 'localhost:6700',
   darkTheme: 'auto',
   transparent: false,
   scale: false,
@@ -37,6 +37,135 @@ interface SettingsProps {
 }
 
 export default function Settings(props: SettingsProps) {
+  const [pageIndex, setPageIndex] = createSignal(0)
+  const pages: { icon: string; title: string; content: JSX.Element }[] = [
+    {
+      icon: mdiServer,
+      title: 'connect',
+      content: (
+        <>
+          <h2>connect to a server first to get started.</h2>
+          <p class="tips">all operations are performed in your browser.</p>
+          <div class="flex items-center self-stretch font-mono">
+            <p class="text-xs">ws://</p>
+            <input
+              class="input flex-grow"
+              type="text"
+              prefix="ws://"
+              value={props.config[0].server}
+              placeholder="host:port"
+            />
+            <button class="icon-button">
+              <PathIcon path={mdiArrowRight} />
+            </button>
+          </div>
+        </>
+      ),
+    },
+    {
+      icon: mdiWrench,
+      title: 'configure',
+      content: (
+        <>
+          <h2>dark mode</h2>
+          <div class="switches">
+            <button
+              class="switch"
+              data-active={props.config[0].darkTheme == 'auto'}
+              onClick={() => props.config[1]('darkTheme', 'auto')}
+            >
+              system
+            </button>
+            <button
+              class="switch"
+              data-active={props.config[0].darkTheme == true}
+              onClick={() => props.config[1]('darkTheme', true)}
+            >
+              true
+            </button>
+            <button
+              class="switch"
+              data-active={props.config[0].darkTheme == false}
+              onClick={() => props.config[1]('darkTheme', false)}
+            >
+              false
+            </button>
+          </div>
+          <h2>transparent bg</h2>
+          <div class="switches">
+            <button
+              class="switch"
+              data-active={props.config[0].transparent}
+              onClick={() => props.config[1]('transparent', true)}
+            >
+              true
+            </button>
+            <button
+              class="switch"
+              data-active={!props.config[0].transparent}
+              onClick={() => props.config[1]('transparent', false)}
+            >
+              false
+            </button>
+          </div>
+          <h2>scaling</h2>
+          <p class="tips">responsive scaling based on viewport width</p>
+          <div class="switches">
+            <button
+              class="switch"
+              data-active={props.config[0].scale}
+              onClick={() => props.config[1]('scale', true)}
+            >
+              responsive
+            </button>
+            <button
+              class="switch"
+              data-active={!props.config[0].scale}
+              onClick={() => props.config[1]('scale', false)}
+            >
+              default
+            </button>
+          </div>
+          <h2>blur</h2>
+          <p class="tips">disable for better performance</p>
+          <div class="switches">
+            <button
+              class="switch"
+              data-active={props.config[0].blur}
+              onClick={() => props.config[1]('blur', true)}
+            >
+              true
+            </button>
+            <button
+              class="switch"
+              data-active={!props.config[0].blur}
+              onClick={() => props.config[1]('blur', false)}
+            >
+              false
+            </button>
+          </div>
+          <h2>dynamic background</h2>
+          <p class="tips">same as above</p>
+          <div class="switches">
+            <button
+              class="switch"
+              data-active={props.config[0].dynamic}
+              onClick={() => props.config[1]('dynamic', true)}
+            >
+              true
+            </button>
+            <button
+              class="switch"
+              data-active={!props.config[0].dynamic}
+              onClick={() => props.config[1]('dynamic', false)}
+            >
+              false
+            </button>
+          </div>
+        </>
+      ),
+    },
+  ]
   return (
     <>
       {props.canOpen && !props.open && (
@@ -55,108 +184,25 @@ export default function Settings(props: SettingsProps) {
           'pointer-events': `${props.open ? 'auto' : 'none'}`,
         }}
       >
-        <h1 class="flex items-start justify-between self-stretch">
-          <span>configure</span>
+        <div class="flex items-start self-stretch">
+          <div class="tabs flex-grow">
+            {pages.map((value, index) => (
+              <div
+                class="tab"
+                data-active={index == pageIndex()}
+                onClick={() => setPageIndex(index)}
+              >
+                <PathIcon path={value.icon} class="mr-1" />
+                {value.title}
+              </div>
+            ))}
+          </div>
           <button class="icon-button" onClick={() => props.onToggle && props.onToggle(false)}>
             <PathIcon path={mdiChevronLeft} />
           </button>
-        </h1>
-        <h2>dark mode</h2>
-        <div class="switches">
-          <button
-            class="switch"
-            data-active={props.config[0].darkTheme == 'auto'}
-            onClick={() => props.config[1]('darkTheme', 'auto')}
-          >
-            system
-          </button>
-          <button
-            class="switch"
-            data-active={props.config[0].darkTheme == true}
-            onClick={() => props.config[1]('darkTheme', true)}
-          >
-            true
-          </button>
-          <button
-            class="switch"
-            data-active={props.config[0].darkTheme == false}
-            onClick={() => props.config[1]('darkTheme', false)}
-          >
-            false
-          </button>
         </div>
-        <h2>transparent bg</h2>
-        <div class="switches">
-          <button
-            class="switch"
-            data-active={props.config[0].transparent}
-            onClick={() => props.config[1]('transparent', true)}
-          >
-            true
-          </button>
-          <button
-            class="switch"
-            data-active={!props.config[0].transparent}
-            onClick={() => props.config[1]('transparent', false)}
-          >
-            false
-          </button>
-        </div>
-        <h2>scaling</h2>
-        <p class="tips">responsive scaling based on viewport width</p>
-        <div class="switches">
-          <button
-            class="switch"
-            data-active={props.config[0].scale}
-            onClick={() => props.config[1]('scale', true)}
-          >
-            responsive
-          </button>
-          <button
-            class="switch"
-            data-active={!props.config[0].scale}
-            onClick={() => props.config[1]('scale', false)}
-          >
-            default
-          </button>
-        </div>
-        <h2>blur</h2>
-        <p class="tips">disable for better performance</p>
-        <div class="switches">
-          <button
-            class="switch"
-            data-active={props.config[0].blur}
-            onClick={() => props.config[1]('blur', true)}
-          >
-            true
-          </button>
-          <button
-            class="switch"
-            data-active={!props.config[0].blur}
-            onClick={() => props.config[1]('blur', false)}
-          >
-            false
-          </button>
-        </div>
-        <h2>dynamic background</h2>
-        <p class="tips">same as above</p>
-        <div class="switches">
-          <button
-            class="switch"
-            data-active={props.config[0].dynamic}
-            onClick={() => props.config[1]('dynamic', true)}
-          >
-            true
-          </button>
-          <button
-            class="switch"
-            data-active={!props.config[0].dynamic}
-            onClick={() => props.config[1]('dynamic', false)}
-          >
-            false
-          </button>
-        </div>
-        <div class="flex-grow min-h-5" />
+        {pages[pageIndex()].content}
+        <div class="flex-grow min-h-6" />
         {window.obsstudio && <p class="tips">obs detected</p>}
         <p class="tips">
           <a
