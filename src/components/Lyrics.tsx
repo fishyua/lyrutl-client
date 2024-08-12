@@ -25,8 +25,7 @@ interface LyricProps extends JSX.HTMLAttributes<HTMLDivElement> {
 
 export default function Lyrics(props: LyricProps) {
   const [index, setIndex] = createSignal(-1)
-  const timer = new Timer(100, (t) => {
-    console.log('tik', t)
+  const timer = new Timer(25, (t) => {
     if (lrc[index() + 1].startMillisecond <= t + lrcEasingDur * lrcEasingOffset)
       setIndex((i) => i + 1)
   })
