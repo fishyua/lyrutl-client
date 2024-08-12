@@ -1,5 +1,5 @@
 import { LyricLine } from 'clrc'
-import { LyrutlConfig } from './components/Settings.tsx'
+import { LyrutlConfig } from '../components/Settings.tsx'
 
 export function pxToRem(px: number): number {
   return px / Number(window.getComputedStyle(document.documentElement).fontSize.slice(0, -2))

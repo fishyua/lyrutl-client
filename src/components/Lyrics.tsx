@@ -1,9 +1,17 @@
-import { createEffect, createSignal, JSX } from 'solid-js'
+import { createEffect, createSignal, JSX, onCleanup } from 'solid-js'
 import { LyricLine, parse } from 'clrc'
 import gsap from 'gsap'
-import { limitNumber, pxToRem } from '../utils.ts'
+import { limitNumber, pxToRem } from '../libs/utils.ts'
 import { LyrutlConfig } from './Settings.tsx'
-import { lrcAnimDelay, lrcAnimTarget, lrcGap, lrcTween } from '../constants.ts'
+import {
+  lrcAnimDelay,
+  lrcAnimTarget,
+  lrcEasingDur,
+  lrcEasingOffset,
+  lrcGap,
+  lrcTween,
+} from '../libs/constants.ts'
+import Timer from '../libs/timer.ts'
 
 const testLrc =
   '[00:12.838] You carried me, bettered me\n[00:14.533] Figured me out\n[00:18.957] Got nothing else\n[00:19.816] Nothing to write home about, yeah\n[00:25.047] I’m coming back to safety\n[00:26.763] Told you I would\n[00:31.288] Keep running after this\n[00:32.485] This ought to be good\n[00:34.527]\n[00:35.562] We’re gonna be good\n[00:38.747] I’m gonna make a world like no one else\n[00:41.807] And it’s gonna be yours\n[00:45.047] And nobody can take it\n[00:46.766] Nobody can take it\n[00:48.328] Back from you (Oh)\n[00:53.989] And it’s gonna be good, yeah\n[00:58.939]\n[01:02.066] And people stare, people think\n[01:03.797] People know best\n[01:08.129] We’re making noise, making love\n[01:09.832] Making a mess\n[01:13.301] And I know that we tried and we gave it all we could (Aha-ha)\n[01:20.548] Keep running after this\n[01:21.712] This ought to be good\n[01:23.841]\n[01:24.860] We’re gonna be good\n[01:28.172] I’m gonna make a world to ourselves just ourselves\n[01:30.984] And it’s gonna be yours\n[01:34.292] And nobody can take it\n[01:35.971] Nobody can take it\n[01:37.567] Back from you\n[01:39.588] It’s been harder than it should\n[01:43.266] But it’s gonna be good, yeah\n[01:47.653]\n[02:13.981] We’re gonna be\n[02:26.667] And nobody can take it\n[02:28.300] Nobody can take it\n[02:29.865] Nobody can take it\n[02:31.355] Nobody can take it\n[02:32.879] Back from you\n[02:38.713] We’re gonna be good\n'
@@ -11,13 +19,30 @@ const testLrc =
 interface LyricProps extends JSX.HTMLAttributes<HTMLDivElement> {
   config: LyrutlConfig
   onCoverUpdate?: (img: HTMLImageElement) => void
+  timeSync: number
+  paused: boolean
 }
 
 export default function Lyrics(props: LyricProps) {
   const [index, setIndex] = createSignal(-1)
+  const timer = new Timer(100, (t) => {
+    console.log('tik', t)
+    if (lrc[index() + 1].startMillisecond <= t + lrcEasingDur * lrcEasingOffset)
+      setIndex((i) => i + 1)
+  })
 
   let coverRef!: HTMLDivElement
   let lrcRef!: HTMLDivElement
+  let lrc = parse(testLrc) as LyricLine[]
+
+  // time
+  createEffect(() => {
+    if (props.paused) {
+      timer.stop()
+      return
+    }
+    timer.start(props.timeSync)
+  })
 
   // update: lyrics
   createEffect(() => {
@@ -65,6 +90,10 @@ export default function Lyrics(props: LyricProps) {
     })
   })
 
+  onCleanup(() => {
+    timer.stop()
+  })
+
   return (
     <div {...props} class={`w-full h-screen grid grid-cols-2 ${props.class}`}>
       <div ref={coverRef} class="flex flex-col items-end justify-center pr-[6.5vw]">
@@ -78,9 +107,6 @@ export default function Lyrics(props: LyricProps) {
             props.onCoverUpdate && props.onCoverUpdate(e.target as HTMLImageElement)
           }}
         ></img>
-        <button class="button" onClick={() => setIndex((i) => i + 1)}>
-          next
-        </button>
       </div>
       <div
         id="lyrics-container"

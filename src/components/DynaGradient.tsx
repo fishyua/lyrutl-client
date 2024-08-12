@@ -1,5 +1,5 @@
 import { createEffect, createSignal, onCleanup, onMount } from 'solid-js'
-import { listRand, rangedRand } from '../utils'
+import { listRand, rangedRand } from '../libs/utils'
 import { hexFromArgb, Theme } from '@material/material-color-utilities'
 
 class GradElement {

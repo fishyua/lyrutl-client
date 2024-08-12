@@ -2,6 +2,8 @@ import gsap, { Power4 } from 'gsap'
 import CustomEase from 'gsap/CustomEase'
 gsap.registerPlugin(CustomEase)
 
+export const updInfoSeparator = '/%&;/'
+
 export const lrcAnimTarget: gsap.TweenTarget = '#lyrics>div'
 export const lrcAnimDelay = 0.017
 export const lrcEasing = CustomEase.create('custom', 'M0,0 C0.4,0.14 0.1,1 1,1')

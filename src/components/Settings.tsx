@@ -34,10 +34,15 @@ interface SettingsProps {
   open: boolean
   canOpen?: boolean
   onToggle?: (open: boolean) => void
+  onConnectServer: (url: string) => Promise<boolean>
 }
 
 export default function Settings(props: SettingsProps) {
   const [pageIndex, setPageIndex] = createSignal(0)
+  const [connectStat, setConnectStat] = createSignal<'disconnected' | 'connecting' | 'connected'>(
+    'disconnected',
+  )
+  let inputRef!: HTMLInputElement
   const pages: { icon: string; title: string; content: JSX.Element }[] = [
     {
       icon: mdiServer,
@@ -46,19 +51,32 @@ export default function Settings(props: SettingsProps) {
         <>
           <h2>connect to a server first to get started.</h2>
           <p class="tips">all operations are performed in your browser.</p>
-          <div class="flex items-center self-stretch font-mono">
+          <div
+            class="flex items-center self-stretch font-mono"
+            data-disabled={connectStat() == 'connecting'}
+          >
             <p class="text-xs">ws://</p>
             <input
+              ref={inputRef}
               class="input flex-grow"
               type="text"
-              prefix="ws://"
               value={props.config[0].server}
               placeholder="host:port"
             />
-            <button class="icon-button">
+            <button
+              class="icon-button"
+              onClick={() => {
+                props.config[1]('server', inputRef.value)
+                setConnectStat('connecting')
+                props
+                  .onConnectServer('ws://' + props.config[0].server)
+                  .then((c) => (c ? setConnectStat('connected') : setConnectStat('disconnected')))
+              }}
+            >
               <PathIcon path={mdiArrowRight} />
             </button>
           </div>
+          <p class="tips">{connectStat()}</p>
         </>
       ),
     },
