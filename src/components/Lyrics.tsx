@@ -77,7 +77,7 @@ export default function Lyrics(props: LyricProps) {
         },
       }),
       scale: (i) => (i == index() ? 1.03 : 1),
-      delay: (i) => (i < index() ? 0 : lrcAnimDelay * (i - index())),
+      delay: (i) => (i < index() - 1 ? 0 : lrcAnimDelay * (i - index() + 1)),
       transformOrigin: 'left center',
       opacity: (i) => {
         if (i < index()) return 0
