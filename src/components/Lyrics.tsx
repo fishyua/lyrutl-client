@@ -26,7 +26,7 @@ interface LyricProps extends JSX.HTMLAttributes<HTMLDivElement> {
 export default function Lyrics(props: LyricProps) {
   const [index, setIndex] = createSignal(-1)
   const timer = new Timer(25, (t) => {
-    if (lrc[index() + 1].startMillisecond <= t + lrcEasingDur * lrcEasingOffset)
+    if (lrc[index() + 1].startMillisecond <= t + lrcAnimDelay + lrcEasingDur * lrcEasingOffset)
       setIndex((i) => i + 1)
   })
 
